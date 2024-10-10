@@ -1,21 +1,30 @@
-package tukano.impl;
+package main.java.tukano.impl;
 
 import static java.lang.String.format;
-import static tukano.api.Result.error;
-import static tukano.api.Result.errorOrResult;
-import static tukano.api.Result.errorOrValue;
-import static tukano.api.Result.ok;
-import static tukano.api.Result.ErrorCode.BAD_REQUEST;
-import static tukano.api.Result.ErrorCode.FORBIDDEN;
+import static main.java.tukano.api.Result.ErrorCode.BAD_REQUEST;
+import static main.java.tukano.api.Result.ErrorCode.FORBIDDEN;
+import static main.java.tukano.api.Result.error;
+import static main.java.tukano.api.Result.errorOrResult;
+import static main.java.tukano.api.Result.errorOrValue;
+import static main.java.tukano.api.Result.ok;
+import static main.java.tukano.api.Result.error;
+import static main.java.tukano.api.Result.errorOrResult;
+import static main.java.tukano.api.Result.errorOrValue;
+import static main.java.tukano.api.Result.ok;
+import static main.java.tukano.api.Result.ErrorCode.BAD_REQUEST;
+import static main.java.tukano.api.Result.ErrorCode.FORBIDDEN;
 
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
-import tukano.api.Result;
-import tukano.api.User;
-import tukano.api.Users;
-import utils.DB;
+import main.java.tukano.api.Users;
+import main.java.tukano.api.Result;
+import main.java.tukano.api.User;
+import main.java.tukano.api.Users;
+import main.java.tukano.impl.JavaBlobs;
+import main.java.tukano.impl.JavaShorts;
+import main.java.utils.DB;
 
 public class JavaUsers implements Users {
 	
@@ -72,8 +81,8 @@ public class JavaUsers implements Users {
 
 			// Delete user shorts and related info asynchronously in a separate thread
 			Executors.defaultThreadFactory().newThread( () -> {
-				JavaShorts.getInstance().deleteAllShorts(userId, pwd, Token.get(userId));
-				JavaBlobs.getInstance().deleteAllBlobs(userId, Token.get(userId));
+				JavaShorts.getInstance().deleteAllShorts(userId, pwd, main.java.tukano.impl.Token.get(userId));
+				JavaBlobs.getInstance().deleteAllBlobs(userId, main.java.tukano.impl.Token.get(userId));
 			}).start();
 			
 			return DB.deleteOne( user);
@@ -93,7 +102,7 @@ public class JavaUsers implements Users {
 		return ok(hits);
 	}
 
-	
+
 	private Result<User> validatedUserOrError( Result<User> res, String pwd ) {
 		if( res.isOK())
 			return res.value().getPwd().equals( pwd ) ? res : error(FORBIDDEN);

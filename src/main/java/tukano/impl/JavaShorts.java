@@ -1,28 +1,29 @@
-package tukano.impl;
+package main.java.tukano.impl;
 
 import static java.lang.String.format;
-import static tukano.api.Result.error;
-import static tukano.api.Result.errorOrResult;
-import static tukano.api.Result.errorOrValue;
-import static tukano.api.Result.errorOrVoid;
-import static tukano.api.Result.ok;
-import static tukano.api.Result.ErrorCode.BAD_REQUEST;
-import static tukano.api.Result.ErrorCode.FORBIDDEN;
-import static utils.DB.getOne;
+import static main.java.tukano.api.Result.error;
+import static main.java.tukano.api.Result.errorOrResult;
+import static main.java.tukano.api.Result.errorOrValue;
+import static main.java.tukano.api.Result.errorOrVoid;
+import static main.java.tukano.api.Result.ok;
+import static main.java.tukano.api.Result.ErrorCode.BAD_REQUEST;
+import static main.java.tukano.api.Result.ErrorCode.FORBIDDEN;
+import static main.java.utils.DB.getOne;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import tukano.api.Blobs;
-import tukano.api.Result;
-import tukano.api.Short;
-import tukano.api.Shorts;
-import tukano.api.User;
-import tukano.impl.data.Following;
-import tukano.impl.data.Likes;
-import tukano.impl.rest.TukanoRestServer;
-import utils.DB;
+import main.java.tukano.api.Shorts;
+import main.java.tukano.api.Blobs;
+import main.java.tukano.api.Result;
+import main.java.tukano.api.Short;
+import main.java.tukano.api.Shorts;
+import main.java.tukano.api.User;
+import main.java.tukano.impl.data.Following;
+import main.java.tukano.impl.data.Likes;
+import main.java.tukano.impl.rest.TukanoRestServer;
+import main.java.utils.DB;
 
 public class JavaShorts implements Shorts {
 
@@ -80,7 +81,7 @@ public class JavaShorts implements Shorts {
 					var query = format("DELETE Likes l WHERE l.shortId = '%s'", shortId);
 					hibernate.createNativeQuery( query, Likes.class).executeUpdate();
 					
-					JavaBlobs.getInstance().delete(shrt.getBlobUrl(), Token.get() );
+					JavaBlobs.getInstance().delete(shrt.getBlobUrl(), main.java.tukano.impl.Token.get() );
 				});
 			});	
 		});
@@ -152,7 +153,7 @@ public class JavaShorts implements Shorts {
 	}
 		
 	protected Result<User> okUser( String userId, String pwd) {
-		return JavaUsers.getInstance().getUser(userId, pwd);
+		return main.java.tukano.impl.JavaUsers.getInstance().getUser(userId, pwd);
 	}
 	
 	private Result<Void> okUser( String userId ) {
@@ -167,7 +168,7 @@ public class JavaShorts implements Shorts {
 	public Result<Void> deleteAllShorts(String userId, String password, String token) {
 		Log.info(() -> format("deleteAllShorts : userId = %s, password = %s, token = %s\n", userId, password, token));
 
-		if( ! Token.isValid( token, userId ) )
+		if( ! main.java.tukano.impl.Token.isValid( token, userId ) )
 			return error(FORBIDDEN);
 		
 		return DB.transaction( (hibernate) -> {
